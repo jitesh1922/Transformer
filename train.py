@@ -9,7 +9,7 @@ dropout = 0.1
 
 transformer = Transformer(src_vocab_size, tgt_vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)
 
-# Generate random sample data
+# Generate random sample data for src and tgt
 src_data = torch.randint(1, src_vocab_size, (64, max_seq_length))  # (batch_size, seq_length)
 tgt_data = torch.randint(1, tgt_vocab_size, (64, max_seq_length))  # (batch_size, seq_length)
 
