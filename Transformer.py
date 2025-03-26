@@ -12,10 +12,15 @@ class Transformer(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def generate_mask(self, src, tgt):
+        #.unsqueeze(1).unsqueeze(2): Expands to [batch_size, 1, 1, src_seq_length] for broadcasting in attention.
+        #unsqueeze(1).unsqueeze(3): Expands to [batch_size, 1, tgt_seq_length, 1].
         src_mask = (src != 0).unsqueeze(1).unsqueeze(2)
         tgt_mask = (tgt != 0).unsqueeze(1).unsqueeze(3)
         seq_length = tgt.size(1)
+        #torch.triu(torch.ones(...), diagonal=1): Upper triangular matrix with 1s above the diagonal (future tokens).
+        #1 - ...: Inverts it to 0s above the diagonal, 1s on/below (no-peak mask to prevent attending to future tokens).
         nopeak_mask = (1 - torch.triu(torch.ones(1, seq_length, seq_length), diagonal=1)).bool()
+        #tgt_mask & nopeak_mask: Combines padding mask and no-peak mask, shape
         tgt_mask = tgt_mask & nopeak_mask
         return src_mask, tgt_mask
 
